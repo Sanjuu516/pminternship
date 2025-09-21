@@ -1,0 +1,1906 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PM Internship Portal - Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Noto+Sans:wght@400;500;700&family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        /* Government Colors */
+        :root {
+            --saffron: #FF9933;
+            --white: #FFFFFF;
+            --green: #138808;
+            --ashoka-blue: #000080;
+            
+            /* Primary Colors */
+            --primary-blue: var(--ashoka-blue);
+            --secondary-blue: #1e3a8a;
+            --accent-orange: var(--saffron);
+            
+            /* Background Colors */
+            --bg-dark: #f5f5f5;
+            --bg-darker: #e0e0e0;
+            --bg-lighter: #ffffff;
+            
+            /* Text Colors */
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --text-muted: #888888;
+            
+            /* Other */
+            --border-subtle: rgba(0, 0, 0, 0.1);
+            --primary-gradient: linear-gradient(135deg, var(--ashoka-blue) 0%, var(--secondary-blue) 100%);
+            --secondary-gradient: linear-gradient(135deg, var(--saffron) 0%, #ff9966 100%);
+            --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.05);
+            --error-color: #e74c3c;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            
+            /* Enhanced Glow Effects */
+            --glow-blue: 0 0 25px rgba(0, 0, 128, 0.8), 0 0 40px rgba(0, 0, 128, 0.5);
+            --glow-orange: 0 0 25px rgba(255, 153, 51, 0.8), 0 0 40px rgba(255, 153, 51, 0.5);
+            --glow-green: 0 0 25px rgba(19, 136, 8, 0.8), 0 0 40px rgba(19, 136, 8, 0.5);
+            --glow-white: 0 0 25px rgba(255, 255, 255, 0.8), 0 0 40px rgba(255, 255, 255, 0.5);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: none; /* Apply custom cursor to all elements */
+        }
+        
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+        }
+        
+        body {
+            font-family: 'Roboto', 'Noto Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
+            background-image: none;
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
+
+        /* Custom Pen Cursor */
+        .custom-cursor {
+            position: fixed;
+            width: 40px;
+            height: 40px;
+            z-index: 10005; /* Increased z-index to be on top of all modals */
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            transition: transform 0.1s ease;
+        }
+
+        .pen-cursor {
+            font-size: 40px;
+            color: var(--saffron);
+            animation: pulse 2s infinite;
+            filter: drop-shadow(0 0 15px rgba(255, 153, 51, 0.9));
+        }
+
+        /* Floating Icons Background */
+        .floating-icons-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .floating-icon-bg {
+            position: absolute;
+            font-size: 2.5rem;
+            opacity: 0.1;
+            color: var(--ashoka-blue);
+            animation: float-icon 15s infinite ease-in-out;
+            text-shadow: 0 0 10px rgba(0, 0, 128, 0.5);
+        }
+
+        .floating-icon-bg:nth-child(2n) {
+            color: var(--saffron);
+            text-shadow: 0 0 10px rgba(255, 153, 51, 0.5);
+            animation-delay: 1s;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .gradient-text {
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .blue-text {
+            color: var(--ashoka-blue);
+        }
+        
+        /* Government Header */
+        .gov-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(90deg, var(--saffron) 0%, var(--white) 33%, var(--green) 66%, var(--white) 100%);
+            height: 8px;
+            z-index: 1001;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        /* Video Background */
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .video-background video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            transform: translateX(-50%) translateY(-50%);
+            opacity: 0.15;
+            object-fit: cover;
+        }
+        
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: var(--bg-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10003;
+            transition: opacity 0.5s ease-out;
+        }
+        
+        .loading-container {
+            text-align: center;
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+        }
+        
+        .loading-animation {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .loading-icon {
+            font-size: 3rem;
+            color: var(--ashoka-blue);
+            animation: pulse-grow 1.5s ease-in-out infinite;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .loading-circle {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            border-top-color: var(--ashoka-blue);
+            transform: rotate(0deg);
+            animation: spin 1.5s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite;
+        }
+        
+        .loading-circle::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 10px;
+            height: 10px;
+            background: var(--ashoka-blue);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 5px var(--ashoka-blue);
+        }
+        
+        .loading-circle-alt {
+            position: absolute;
+            width: 80%;
+            height: 80%;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            border-bottom-color: var(--saffron);
+            transform: rotate(0deg) scale(0.8);
+            animation: spin-reverse 1.2s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite;
+        }
+        
+        .loading-text h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 2px;
+            font-family: 'Roboto Slab', serif;
+        }
+        
+        .loading-text p {
+            color: var(--text-secondary);
+            font-style: italic;
+            margin-bottom: 2rem;
+            font-size: 1.2rem;
+            font-family: 'Roboto', sans-serif;
+        }
+        
+        /* Header Styles */
+        .header {
+            position: fixed;
+            top: 8px;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-subtle);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .header.scrolled {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(30px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 80px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            letter-spacing: 1px;
+            font-family: 'Roboto Slab', serif;
+        }
+        
+        .logo:hover {
+            transform: scale(1.05);
+            text-shadow: 0 0 15px rgba(0, 0, 128, 0.6);
+        }
+        
+        .logo-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            color: var(--ashoka-blue);
+            animation: pulse 2s infinite;
+        }
+        
+        .nav {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+            letter-spacing: 0.3px;
+            font-family: 'Roboto', sans-serif;
+        }
+        
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--primary-gradient);
+            transition: left 0.3s ease;
+            z-index: -1;
+        }
+        
+        .nav-item:hover::before {
+            left: 0;
+        }
+        
+        .nav-item:hover {
+            color: var(--white);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 128, 0.3);
+            box-shadow: 0 0 20px rgba(0, 0, 128, 0.8), 0 0 30px rgba(0, 0, 128, 0.5);
+        }
+        
+        .profile-menu {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .profile-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            background-color: var(--bg-darker);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .profile-info:hover {
+            background-color: #d1d5db;
+            transform: translateY(-3px);
+            box-shadow: var(--glow-blue);
+            border-color: var(--ashoka-blue);
+        }
+
+        .profile-info i {
+            font-size: 1.25rem;
+            color: var(--ashoka-blue);
+        }
+
+        .profile-info span {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .profile-info .fa-chevron-down {
+            transition: transform 0.3s ease;
+        }
+
+        .profile-info .fa-chevron-down.open {
+            transform: rotate(180deg);
+        }
+
+        .profile-dropdown {
+            position: absolute;
+            top: 120%;
+            right: 0;
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-subtle);
+            overflow: hidden;
+            z-index: 10;
+            width: 180px;
+            animation: fadeInUp 0.2s ease;
+        }
+
+        .profile-dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+        }
+
+        .profile-dropdown-item:hover {
+            background-color: var(--bg-dark);
+            color: var(--ashoka-blue);
+            transform: translateY(-2px);
+            box-shadow: var(--glow-blue);
+            border-color: var(--ashoka-blue);
+        }
+        
+        /* Dashboard Styles */
+        .dashboard {
+            padding-top: 120px;
+            padding-bottom: 4rem;
+            min-height: 100vh;
+            opacity: 0;
+            animation: fadeIn 0.8s ease-out 0.5s forwards;
+        }
+
+        .dashboard-header {
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .dashboard-title {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 900;
+            font-family: 'Roboto Slab', serif;
+            margin-bottom: 0.5rem;
+        }
+
+        .dashboard-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            align-items: flex-start;
+        }
+
+        .internships-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            font-family: 'Roboto Slab', serif;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--border-subtle);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .internship-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: var(--shadow-lg);
+            border: 2px solid var(--border-subtle);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .internship-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-xl), var(--glow-blue);
+            border-color: var(--ashoka-blue);
+        }
+
+        .internship-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .internship-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+        }
+
+        .internship-company {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+        
+        .status-badge {
+            padding: 0.4rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-ongoing {
+            background-color: rgba(39, 174, 96, 0.1);
+            color: var(--success-color);
+        }
+
+        .status-upcoming {
+            background-color: rgba(255, 153, 51, 0.1);
+            color: var(--saffron);
+        }
+
+        .status-completed {
+            background-color: rgba(0, 0, 128, 0.1);
+            color: var(--ashoka-blue);
+        }
+
+        .internship-details {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+            border-top: 1px solid var(--border-subtle);
+            padding-top: 1rem;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        .detail-item i {
+            color: var(--primary-blue);
+        }
+        
+        .progress-bar-container {
+            width: 100%;
+            background: var(--bg-darker);
+            border-radius: 50px;
+            overflow: hidden;
+            height: 10px;
+        }
+
+        .progress-label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: var(--primary-gradient);
+            border-radius: 50px;
+            transition: width 0.5s ease;
+        }
+
+        .internship-actions {
+            margin-top: auto;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-subtle);
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+            letter-spacing: 0.5px;
+            font-family: 'Roboto', sans-serif;
+            border: 2px solid transparent;
+        }
+
+        .btn i {
+            transition: transform 0.3s ease;
+        }
+
+        .btn:hover i {
+            transform: translateX(3px);
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: var(--white);
+            box-shadow: 0 5px 15px rgba(0, 0, 128, 0.2);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 128, 0.3), var(--glow-blue);
+            border-color: var(--white);
+        }
+
+        .btn-secondary {
+            background: var(--bg-darker);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover {
+            background: #d1d5db;
+            transform: translateY(-3px);
+            box-shadow: var(--glow-blue);
+            border-color: var(--ashoka-blue);
+        }
+
+        .notifications-panel {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-lg);
+            border: 2px solid var(--border-subtle);
+            position: sticky;
+            top: 120px;
+            transition: all 0.3s ease;
+        }
+        
+        .notifications-panel:hover {
+            box-shadow: var(--shadow-lg), var(--glow-blue);
+            border-color: var(--ashoka-blue);
+        }
+        
+        .notification-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .notification-item {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+            padding: 1rem;
+            border-radius: 12px;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .notification-item:hover {
+            background-color: var(--bg-dark);
+            box-shadow: var(--glow-blue);
+            border-color: var(--ashoka-blue);
+            transform: translateY(-3px);
+        }
+
+        .notification-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        
+        .notification-icon {
+            font-size: 1.25rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .icon-success {
+            background-color: rgba(39, 174, 96, 0.1);
+            color: var(--success-color);
+        }
+        
+        .icon-alert {
+            background-color: rgba(255, 153, 51, 0.1);
+            color: var(--saffron);
+        }
+
+        .icon-message {
+            background-color: rgba(0, 0, 128, 0.1);
+            color: var(--ashoka-blue);
+        }
+        
+        .notification-content p {
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .notification-time {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        .placeholder-text {
+            color: var(--text-muted);
+            text-align: center;
+            padding: 2rem 0;
+            font-style: italic;
+        }
+
+        /* Deadlines Section */
+        .deadlines-section {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-lg);
+            border: 2px solid var(--border-subtle);
+            margin-top: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .deadlines-section:hover {
+            box-shadow: var(--shadow-lg), var(--glow-blue);
+            border-color: var(--ashoka-blue);
+        }
+
+        .deadline-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .deadline-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            border-radius: 12px;
+            background: var(--bg-dark);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .deadline-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05), var(--glow-blue);
+            border-color: var(--ashoka-blue);
+        }
+
+        .deadline-item.urgent {
+            background: rgba(231, 76, 60, 0.1);
+            border-left: 4px solid var(--error-color);
+        }
+
+        .deadline-item.urgent:hover {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05), var(--glow-orange);
+            border-color: var(--error-color);
+        }
+
+        .deadline-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .deadline-title {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .deadline-date {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .deadline-date i {
+            color: var(--primary-blue);
+        }
+
+        .deadline-action {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .deadline-reminder {
+            background: var(--bg-darker);
+            color: var(--text-primary);
+            border: none;
+            border-radius: 50px;
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: 2px solid transparent;
+        }
+
+        .deadline-reminder:hover {
+            background: var(--primary-blue);
+            color: var(--white);
+            box-shadow: var(--glow-blue);
+            border-color: var(--white);
+        }
+
+        /* --- UPDATED NOTIFICATION SETTINGS STYLES --- */
+        .notification-settings {
+            position: relative;
+            display: inline-block;
+        }
+
+        .settings-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .settings-btn:hover {
+            background: var(--bg-darker);
+            color: var(--primary-blue);
+            box-shadow: var(--glow-blue);
+            border-color: var(--ashoka-blue);
+        }
+
+        /* This is the new style for the inline, collapsible settings area */
+        .settings-area {
+            background: var(--bg-dark);
+            border-radius: 12px;
+            border: 1px solid var(--border-subtle);
+            margin: 1rem 0;
+            animation: fadeIn 0.4s ease;
+            overflow: hidden;
+        }
+
+        .settings-header {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border-subtle);
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+        }
+
+        .settings-options {
+            padding: 0.5rem;
+        }
+
+        .setting-option {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-bottom: 0.25rem;
+            transition: all 0.2s ease;
+            background-color: var(--white);
+            border: 2px solid transparent;
+        }
+
+        .setting-option:hover {
+            border-color: var(--ashoka-blue);
+            transform: translateY(-2px);
+            box-shadow: var(--glow-blue);
+        }
+
+        .setting-option label {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .setting-option i {
+            color: var(--primary-blue);
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 40px;
+            height: 20px;
+            background: var(--bg-darker);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .toggle-switch.active {
+            background: var(--primary-gradient);
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 16px;
+            height: 16px;
+            background: var(--white);
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+        }
+
+        .toggle-switch.active .toggle-slider {
+            transform: translateX(20px);
+        }
+
+        /* Footer Styles */
+        .footer {
+            background: var(--bg-darker);
+            border-top: 1px solid var(--border-subtle);
+            padding: 4rem 0 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .footer-content {
+            margin-bottom: 3rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .footer-main {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 4rem;
+            align-items: start;
+        }
+        
+        .footer-brand {
+            max-width: 300px;
+        }
+        
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            text-decoration: none;
+            font-family: 'Roboto Slab', serif;
+        }
+        
+        .footer-logo:hover {
+            text-shadow: 0 0 15px rgba(0, 0, 128, 0.6);
+        }
+        
+        .footer-description {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            font-family: 'Roboto', sans-serif;
+        }
+        
+        .footer-links {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+        
+        .link-group h4 {
+            color: var(--text-primary);
+            font-weight: 600;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.9rem;
+            font-family: 'Roboto', sans-serif;
+        }
+        
+        .link-group a {
+            display: block;
+            color: var(--text-secondary);
+            text-decoration: none;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
+            font-family: 'Roboto', sans-serif;
+            border: 2px solid transparent;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+        }
+        
+        .link-group a:hover {
+            color: var(--ashoka-blue);
+            box-shadow: var(--glow-blue);
+            border-color: var(--ashoka-blue);
+            transform: translateY(-2px);
+        }
+        
+        .footer-bottom {
+            border-top: 1px solid var(--border-subtle);
+            padding-top: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .footer-bottom-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Animation Keyframes */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.8; }
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes spin-reverse {
+            from { transform: rotate(0deg) scale(0.8); }
+            to { transform: rotate(-360deg) scale(0.8); }
+        }
+        
+        @keyframes pulse-grow {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        @keyframes float-icon {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(10deg); }
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 968px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            .notifications-panel {
+                position: static;
+            }
+        }
+        
+        @media (max-width: 640px) {
+            .container {
+                padding: 0 1rem;
+            }
+            .internship-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+            .internship-details {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.75rem;
+            }
+             .footer-main, .footer-links {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            .footer-bottom-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="custom-cursor">
+        <i class="fas fa-pen pen-cursor"></i>
+    </div>
+
+    <div class="floating-icons-bg">
+        <i class="fas fa-briefcase floating-icon-bg" style="top: 10%; left: 15%; animation-delay: 0s;"></i>
+        <i class="fas fa-user-tie floating-icon-bg" style="top: 80%; left: 85%; animation-delay: 2s;"></i>
+        <i class="fas fa-graduation-cap floating-icon-bg" style="top: 45%; left: 50%; animation-delay: 4s;"></i>
+        <i class="fas fa-chart-line floating-icon-bg" style="top: 20%; left: 70%; animation-delay: 6s;"></i>
+        <i class="fas fa-building floating-icon-bg" style="top: 70%; left: 30%; animation-delay: 8s;"></i>
+        <i class="fas fa-bell floating-icon-bg" style="top: 5%; left: 60%; animation-delay: 10s;"></i>
+        <i class="fas fa-tasks floating-icon-bg" style="top: 90%; left: 5%; animation-delay: 12s;"></i>
+        <i class="fas fa-handshake floating-icon-bg" style="top: 30%; left: 95%; animation-delay: 14s;"></i>
+    </div>
+
+    <div id="root"></div>
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+        
+        const LoadingScreen = () => {
+            const [isLoading, setIsLoading] = useState(true);
+            
+            useEffect(() => {
+                const timer = setTimeout(() => {
+                    setIsLoading(false);
+                }, 500);
+                
+                return () => clearTimeout(timer);
+            }, []);
+            
+            if (!isLoading) return null;
+            
+            return (
+                <div className="loading-screen">
+                    <div className="loading-container">
+                        <div className="loading-animation">
+                            <div className="loading-circle"></div>
+                            <div className="loading-circle-alt"></div>
+                            <i className="fas fa-graduation-cap loading-icon"></i>
+                        </div>
+                        <div className="loading-text">
+                            <h2>PM INTERNSHIP PORTAL</h2>
+                            <p>"Welcome Back! Loading Your Dashboard..."</p>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+        
+        const Header = ({ username }) => {
+            const [isScrolled, setIsScrolled] = useState(false);
+            const [isProfileOpen, setIsProfileOpen] = useState(false);
+            const profileRef = useRef(null);
+
+            useEffect(() => {
+                const handleClickOutside = (event) => {
+                    if (profileRef.current && !profileRef.current.contains(event.target)) {
+                        setIsProfileOpen(false);
+                    }
+                };
+                document.addEventListener("mousedown", handleClickOutside);
+                return () => {
+                    document.removeEventListener("mousedown", handleClickOutside);
+                };
+            }, [profileRef]);
+            
+            useEffect(() => {
+                const handleScroll = () => {
+                    setIsScrolled(window.scrollY > 50);
+                };
+                window.addEventListener('scroll', handleScroll);
+                return () => window.removeEventListener('scroll', handleScroll);
+            }, []);
+            
+            return (
+                <header className={`header ${isScrolled ? 'scrolled' : ''}`}>
+                    <div className="container">
+                        <div className="header-content">
+                            <a href="plan.html" className="logo">
+                                <i className="fas fa-graduation-cap logo-icon"></i>
+                                <span>PM INTERNSHIP</span>
+                            </a>
+                            <nav className="nav">
+                                <div className="profile-menu" ref={profileRef}>
+                                    <div className="profile-info" onClick={() => setIsProfileOpen(!isProfileOpen)}>
+                                        <i className="fas fa-user-circle"></i>
+                                        <span>{username}</span>
+                                        <i className={`fas fa-chevron-down ${isProfileOpen ? 'open' : ''}`}></i>
+                                    </div>
+                                    {isProfileOpen && (
+                                        <div className="profile-dropdown">
+                                            <a href="profile.html" className="profile-dropdown-item">
+                                                <i className="fas fa-user"></i>
+                                                My Profile
+                                            </a>
+                                             <a href="index.html" className="profile-dropdown-item">
+                                                 <i className="fas fa-sign-out-alt"></i>
+                                                 Logout
+                                             </a>
+                                        </div>
+                                    )}
+                                </div>
+                            </nav>
+                        </div>
+                    </div>
+                </header>
+            );
+        };
+
+        const Dashboard = () => {
+            const [internships, setInternships] = useState([]);
+            const [notifications, setNotifications] = useState([]);
+            const [deadlines, setDeadlines] = useState([]);
+            const [reminders, setReminders] = useState([]);
+            const [notificationSettings, setNotificationSettings] = useState({
+                alerts: true,
+                messages: true,
+                certificates: true,
+                deadlines: true
+            });
+            const [showSettings, setShowSettings] = useState(false);
+            const [loading, setLoading] = useState(true);
+            const [error, setError] = useState(null);
+            const [userProfile, setUserProfile] = useState(null);
+
+            // Request notification permission on component mount
+            useEffect(() => {
+                if ("Notification" in window && Notification.permission === "default") {
+                    Notification.requestPermission();
+                }
+            }, []);
+
+            // Load user profile from localStorage
+            useEffect(() => {
+                const userEmail = localStorage.getItem('userEmail');
+                if (userEmail) {
+                    const profileData = localStorage.getItem(`profile_v2_${userEmail}`);
+                    if (profileData) {
+                        try {
+                            setUserProfile(JSON.parse(profileData));
+                        } catch (e) {
+                            console.error("Error parsing profile data:", e);
+                            setError("Could not load your profile. Please try again.");
+                        }
+                    } else {
+                        setError("Profile not found. Please complete your profile first.");
+                    }
+                } else {
+                    setError("User not logged in. Please log in again.");
+                }
+            }, []);
+
+            // Generate internships based on user profile
+            const generateInternships = (profile) => {
+                if (!profile || !profile.sectorInterests || profile.sectorInterests.length === 0) {
+                    return [];
+                }
+
+                const internships = [];
+                const currentDate = new Date();
+                
+                // Generate internships based on user's sector interests
+                profile.sectorInterests.forEach((sector, index) => {
+                    const statusOptions = ['Upcoming', 'Ongoing', 'Completed'];
+                    const status = statusOptions[Math.floor(Math.random() * statusOptions.length)];
+                    
+                    let startDate, endDate;
+                    if (status === 'Upcoming') {
+                        startDate = new Date(currentDate);
+                        startDate.setDate(currentDate.getDate() + Math.floor(Math.random() * 30) + 1);
+                        endDate = new Date(startDate);
+                        endDate.setMonth(startDate.getMonth() + parseInt(profile.internshipPreferences?.duration?.match(/\d+/)?.[0] || 3));
+                    } else if (status === 'Ongoing') {
+                        startDate = new Date(currentDate);
+                        startDate.setDate(currentDate.getDate() - Math.floor(Math.random() * 30) - 1);
+                        endDate = new Date(startDate);
+                        endDate.setMonth(startDate.getMonth() + parseInt(profile.internshipPreferences?.duration?.match(/\d+/)?.[0] || 3));
+                    } else {
+                        startDate = new Date(currentDate);
+                        startDate.setDate(currentDate.getDate() - Math.floor(Math.random() * 60) - 30);
+                        endDate = new Date(startDate);
+                        endDate.setMonth(startDate.getMonth() + parseInt(profile.internshipPreferences?.duration?.match(/\d+/)?.[0] || 3));
+                    }
+                    
+                    // Format dates
+                    const formatDate = (date) => {
+                        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                        return `${months[date.getMonth()]} ${date.getFullYear()}`;
+                    };
+                    
+                    // Generate location based on user preferences
+                    let location = "Remote";
+                    if (profile.internshipPreferences?.mode?.includes("Office") || profile.internshipPreferences?.mode?.includes("Hybrid")) {
+                        location = profile.basicDetails?.district || profile.basicDetails?.state || "India";
+                    }
+                    
+                    internships.push({
+                        id: `internship-${index}`,
+                        title: `${sector} Development Intern`,
+                        company: `Ministry of ${sector}`,
+                        status,
+                        period: `${formatDate(startDate)} - ${formatDate(endDate)}`,
+                        location,
+                        progress: status === 'Ongoing' ? Math.floor(Math.random() * 80) + 10 : status === 'Completed' ? 100 : 0,
+                        startDate,
+                        endDate
+                    });
+                });
+                
+                return internships;
+            };
+
+            // Generate deadlines based on internships
+            const generateDeadlines = (internships) => {
+                const deadlines = [];
+                const currentDate = new Date();
+                
+                internships.forEach(internship => {
+                    if (internship.status === 'Upcoming') {
+                        // Application deadline
+                        const appDeadline = new Date(internship.startDate);
+                        appDeadline.setDate(appDeadline.getDate() - 7);
+                        
+                        if (appDeadline > currentDate) {
+                            deadlines.push({
+                                id: `app-${internship.id}`,
+                                title: `Application Deadline: ${internship.title}`,
+                                date: appDeadline.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+                                urgent: appDeadline.getTime() - currentDate.getTime() < 7 * 24 * 60 * 60 * 1000, // Within 7 days
+                                action: "Apply Now",
+                                internshipId: internship.id
+                            });
+                        }
+                    } else if (internship.status === 'Ongoing') {
+                        // Monthly report deadline
+                        const reportDeadline = new Date();
+                        reportDeadline.setDate(reportDeadline.getDate() + Math.floor(Math.random() * 14) + 1);
+                        
+                        deadlines.push({
+                            id: `report-${internship.id}`,
+                            title: `Monthly Report: ${internship.title}`,
+                            date: reportDeadline.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+                            urgent: reportDeadline.getTime() - currentDate.getTime() < 3 * 24 * 60 * 60 * 1000, // Within 3 days
+                            action: "Submit Report",
+                            internshipId: internship.id
+                        });
+                    }
+                });
+                
+                return deadlines;
+            };
+
+            // Generate notifications based on internships and deadlines
+            const generateNotifications = (internships, deadlines) => {
+                const notifications = [];
+                const currentDate = new Date();
+                
+                // Internship notifications
+                internships.forEach(internship => {
+                    if (internship.status === 'Upcoming') {
+                        // Calculate days until start
+                        const diffTime = internship.startDate - currentDate;
+                        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                        
+                        if (diffDays <= 14) {
+                            notifications.push({
+                                id: `upcoming-${internship.id}`,
+                                type: "alert",
+                                icon: "fa-bell",
+                                text: `Get ready! Your '${internship.title}' internship starts in ${diffDays} days.`,
+                                time: "Just now",
+                                category: "alerts"
+                            });
+                        }
+                    } else if (internship.status === 'Ongoing') {
+                        // Generate progress notifications
+                        if (internship.progress >= 50 && internship.progress < 60) {
+                            notifications.push({
+                                id: `progress-${internship.id}`,
+                                type: "success",
+                                icon: "fa-chart-line",
+                                text: `Great progress! You've completed ${internship.progress}% of '${internship.title}'.`,
+                                time: "1 hour ago",
+                                category: "alerts"
+                            });
+                        }
+                    } else if (internship.status === 'Completed') {
+                        notifications.push({
+                            id: `completed-${internship.id}`,
+                            type: "success",
+                            icon: "fa-certificate",
+                            text: `Your certificate for '${internship.title}' is available for download.`,
+                            time: "1 week ago",
+                            category: "certificates"
+                        });
+                    }
+                });
+                
+                // Deadline notifications
+                deadlines.forEach(deadline => {
+                    const deadlineDate = new Date(deadline.date);
+                    const diffTime = deadlineDate - currentDate;
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    
+                    if (diffDays <= 3) {
+                        notifications.push({
+                            id: `deadline-${deadline.id}`,
+                            type: "alert",
+                            icon: "fa-exclamation-circle",
+                            text: `Reminder: ${deadline.title} is due in ${diffDays} days.`,
+                            time: "Just now",
+                            category: "deadlines"
+                        });
+                    }
+                });
+                
+                // Add reminder notifications
+                reminders.forEach(reminder => {
+                    notifications.push({
+                        id: `reminder-${reminder.id}`,
+                        type: "alert",
+                        icon: "fa-bell",
+                        text: `Reminder set for: ${reminder.title} on ${reminder.date}`,
+                        time: "Just now",
+                        category: "deadlines"
+                    });
+                });
+                
+                return notifications;
+            };
+
+            useEffect(() => {
+                if (!userProfile) return;
+                
+                try {
+                    // Generate internships based on user profile
+                    const generatedInternships = generateInternships(userProfile);
+                    setInternships(generatedInternships);
+                    
+                    // Generate deadlines based on internships
+                    const generatedDeadlines = generateDeadlines(generatedInternships);
+                    setDeadlines(generatedDeadlines);
+                    
+                    // Generate initial notifications based on internships and deadlines
+                    const initialNotifications = generateNotifications(generatedInternships, generatedDeadlines);
+                    setNotifications(initialNotifications);
+
+                } catch (e) {
+                    console.error("Failed to generate dashboard data:", e);
+                    setError("Could not load dashboard data. Please try refreshing the page.");
+                } finally {
+                    setLoading(false);
+                }
+            }, [userProfile]);
+
+            // Update notifications when internships, deadlines, or reminders change
+            useEffect(() => {
+                if (internships.length > 0) {
+                    const updatedNotifications = generateNotifications(internships, deadlines);
+                    setNotifications(updatedNotifications);
+                }
+            }, [internships, deadlines, reminders]);
+
+            const toggleNotificationSetting = (setting) => {
+                setNotificationSettings(prev => ({
+                    ...prev,
+                    [setting]: !prev[setting]
+                }));
+            };
+
+            const handleSetReminder = (deadline) => {
+                // Create a new reminder object
+                const newReminder = {
+                    id: Date.now(),
+                    title: deadline.title,
+                    date: deadline.date,
+                    scheduled: true
+                };
+                
+                // Add to reminders state
+                setReminders(prev => [...prev, newReminder]);
+                
+                // Schedule the reminder
+                scheduleReminder(newReminder);
+                
+                // Show confirmation
+                alert(`Reminder set for ${deadline.title} on ${deadline.date}`);
+            };
+
+            const scheduleReminder = (reminder) => {
+                // Parse the date
+                const reminderDate = new Date(reminder.date);
+                const now = new Date();
+                
+                // Calculate time until reminder
+                const timeUntilReminder = reminderDate - now;
+                
+                if (timeUntilReminder <= 0) {
+                    alert("This date has already passed. Please select a future date.");
+                    return;
+                }
+                
+                // Schedule the reminder
+                setTimeout(() => {
+                    // Play alarm sound
+                    playAlarmSound();
+                    
+                    // Show browser notification
+                    if ("Notification" in window && Notification.permission === "granted") {
+                        new Notification("PM Internship Reminder", {
+                            body: `Reminder: ${reminder.title} is due today!`,
+                            icon: "https://cdn-icons-png.flaticon.com/512/263/263051.png",
+                            requireInteraction: true
+                        });
+                    }
+                    
+                    // Show in-app notification
+                    const newNotification = {
+                        id: `triggered-${reminder.id}`,
+                        type: "alert",
+                        icon: "fa-bell",
+                        text: `Reminder: ${reminder.title} is due today!`,
+                        time: "Just now",
+                        category: "deadlines"
+                    };
+                    
+                    setNotifications(prev => [newNotification, ...prev]);
+                }, timeUntilReminder);
+            };
+
+            const playAlarmSound = () => {
+                // Create audio context
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                
+                // Create oscillator
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                // Configure sound
+                oscillator.type = 'sine';
+                oscillator.frequency.value = 800;
+                gainNode.gain.value = 0.3;
+                
+                // Play sound
+                oscillator.start();
+                
+                // Stop after 1 second
+                setTimeout(() => {
+                    oscillator.stop();
+                }, 1000);
+            };
+
+            const filteredNotifications = notifications.filter(notification => {
+                return notificationSettings[notification.category];
+            });
+
+            const renderInternships = () => {
+                if (loading) return <p className="placeholder-text">Loading internships...</p>;
+                if (error) return <p className="placeholder-text" style={{color: 'var(--error-color)'}}>{error}</p>;
+                if (internships.length === 0) {
+                    return (
+                        <div className="placeholder-text">
+                            <p>No internships found based on your profile preferences.</p>
+                            <p>Please update your <a href="profile.html" style={{color: 'var(--ashoka-blue)'}}>profile</a> to see relevant opportunities.</p>
+                        </div>
+                    );
+                }
+
+                return internships.map((internship) => (
+                    <div className="internship-card" key={internship.id}>
+                        <div className="internship-header">
+                            <div>
+                                <h3 className="internship-title">{internship.title}</h3>
+                                <p className="internship-company">{internship.company}</p>
+                            </div>
+                            <span className={`status-badge status-${internship.status.toLowerCase()}`}>{internship.status}</span>
+                        </div>
+                        <div className="internship-details">
+                            <div className="detail-item"><i className="fas fa-calendar-alt"></i><span>{internship.period}</span></div>
+                            <div className="detail-item"><i className="fas fa-map-marker-alt"></i><span>{internship.location}</span></div>
+                        </div>
+                        {internship.status === 'Ongoing' && (
+                            <div>
+                                <label className="progress-label">Progress</label>
+                                <div className="progress-bar-container">
+                                    <div className="progress-bar" style={{width: `${internship.progress}%`}}></div>
+                                </div>
+                            </div>
+                        )}
+                        {(internship.status === 'Upcoming' || internship.status === 'Ongoing') && (
+                            <div className="internship-actions">
+                                {internship.status === 'Upcoming' ? (
+                                    <a href="https://www.internship.gov.in/" target="_blank" rel="noopener noreferrer" className="btn btn-primary">
+                                        Apply Now <i className="fas fa-external-link-alt"></i>
+                                    </a>
+                                ) : (
+                                    <a href="#" className="btn btn-secondary">
+                                        View Details <i className="fas fa-info-circle"></i>
+                                    </a>
+                                )}
+                            </div>
+                        )}
+                    </div>
+                ));
+            };
+
+            const renderNotifications = () => {
+                if (loading) return <p className="placeholder-text">Loading notifications...</p>;
+                if (error) return null; // Don't show error twice
+                if (filteredNotifications.length === 0) return <p className="placeholder-text">No new notifications.</p>;
+
+                return (
+                    <ul className="notification-list">
+                         {filteredNotifications.map((notification) => (
+                              <li className="notification-item" key={notification.id}>
+                                 <div className={`notification-icon icon-${notification.type}`}>
+                                     <i className={`fas ${notification.icon}`}></i>
+                                 </div>
+                                 <div className="notification-content">
+                                     <p>{notification.text}</p>
+                                     <div className="notification-time">{notification.time}</div>
+                                 </div>
+                             </li>
+                         ))}
+                     </ul>
+                );
+            };
+
+            const renderDeadlines = () => {
+                if (loading) return <p className="placeholder-text">Loading deadlines...</p>;
+                if (error) return null;
+                if (deadlines.length === 0) return <p className="placeholder-text">No upcoming deadlines.</p>;
+
+                return (
+                    <ul className="deadline-list">
+                        {deadlines.map((deadline) => (
+                            <li className={`deadline-item ${deadline.urgent ? 'urgent' : ''}`} key={deadline.id}>
+                                <div className="deadline-info">
+                                    <div className="deadline-title">{deadline.title}</div>
+                                    <div className="deadline-date">
+                                        <i className="fas fa-calendar-day"></i>
+                                        <span>{deadline.date}</span>
+                                    </div>
+                                </div>
+                                <div className="deadline-action">
+                                    <button 
+                                        className="deadline-reminder"
+                                        onClick={() => handleSetReminder(deadline)}
+                                    >
+                                        <i className="fas fa-bell"></i>
+                                        <span>Remind Me</span>
+                                    </button>
+                                </div>
+                            </li>
+                        ))}
+                    </ul>
+                );
+            };
+
+            return (
+                <section className="dashboard">
+                    <div className="container">
+                        <div className="dashboard-header">
+                            <h1 className="dashboard-title">My <span className="gradient-text">Dashboard</span></h1>
+                            <p className="dashboard-subtitle">Welcome back! Here's an overview of your internship activities.</p>
+                        </div>
+                        <div className="dashboard-grid">
+                            <div className="internships-section">
+                                <h2 className="section-title">Selected Internships</h2>
+                                {renderInternships()}
+                                
+                                <div className="deadlines-section">
+                                    <h2 className="section-title">Upcoming Deadlines</h2>
+                                    {renderDeadlines()}
+                                </div>
+                            </div>
+                            <div className="notifications-panel">
+                                 <h2 className="section-title">
+                                     Notifications
+                                     <div className="notification-settings">
+                                         {/* --- UPDATED BUTTON with a simpler toggle --- */}
+                                         <button 
+                                             className="settings-btn" 
+                                             onClick={() => setShowSettings(!showSettings)}
+                                         >
+                                             <i className="fas fa-cog"></i>
+                                         </button>
+                                     </div>
+                                 </h2>
+                                 
+                                 {/* --- SETTINGS AREA MOVED AND RE-STYLED --- */}
+                                 {showSettings && (
+                                     <div className="settings-area">
+                                         <div className="settings-header">Notification Settings</div>
+                                         <div className="settings-options">
+                                             <div className="setting-option">
+                                                 <label>
+                                                     <i className="fas fa-bell"></i>
+                                                     <span>Alerts</span>
+                                                     <div 
+                                                         className={`toggle-switch ${notificationSettings.alerts ? 'active' : ''}`}
+                                                         onClick={() => toggleNotificationSetting('alerts')}
+                                                     >
+                                                         <div className="toggle-slider"></div>
+                                                     </div>
+                                                 </label>
+                                             </div>
+                                             <div className="setting-option">
+                                                 <label>
+                                                     <i className="fas fa-envelope"></i>
+                                                     <span>Messages</span>
+                                                     <div 
+                                                         className={`toggle-switch ${notificationSettings.messages ? 'active' : ''}`}
+                                                         onClick={() => toggleNotificationSetting('messages')}
+                                                     >
+                                                         <div className="toggle-slider"></div>
+                                                     </div>
+                                                 </label>
+                                             </div>
+                                             <div className="setting-option">
+                                                 <label>
+                                                     <i className="fas fa-certificate"></i>
+                                                     <span>Certificates</span>
+                                                     <div 
+                                                         className={`toggle-switch ${notificationSettings.certificates ? 'active' : ''}`}
+                                                         onClick={() => toggleNotificationSetting('certificates')}
+                                                     >
+                                                         <div className="toggle-slider"></div>
+                                                     </div>
+                                                 </label>
+                                             </div>
+                                             <div className="setting-option">
+                                                 <label>
+                                                     <i className="fas fa-calendar-check"></i>
+                                                     <span>Deadlines</span>
+                                                     <div 
+                                                         className={`toggle-switch ${notificationSettings.deadlines ? 'active' : ''}`}
+                                                         onClick={() => toggleNotificationSetting('deadlines')}
+                                                     >
+                                                         <div className="toggle-slider"></div>
+                                                     </div>
+                                                 </label>
+                                             </div>
+                                         </div>
+                                     </div>
+                                 )}
+
+                                 {renderNotifications()}
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+        
+        const Footer = () => {
+             return (
+                 <footer className="footer">
+                     <div className="container">
+                         <div className="footer-content">
+                             <div className="footer-main">
+                                 <div className="footer-brand">
+                                     <a href="#" className="footer-logo">
+                                         <i className="fas fa-graduation-cap logo-icon"></i>
+                                         <span>PM INTERNSHIP</span>
+                                     </a>
+                                     <p className="footer-description">
+                                         An initiative to empower youth through skill development and real-world experience.
+                                     </p>
+                                 </div>
+                                 <div className="footer-links">
+                                     <div className="link-group">
+                                         <h4>About</h4>
+                                         <a href="#">About the Scheme</a>
+                                         <a href="#">FAQs</a>
+                                     </div>
+                                     <div className="link-group">
+                                         <h4>Resources</h4>
+                                         <a href="#">For Students</a>
+                                         <a href="#">For Providers</a>
+                                     </div>
+                                     <div className="link-group">
+                                         <h4>Contact</h4>
+                                         <a href="#">Helpdesk</a>
+                                         <a href="#">Feedback</a>
+                                     </div>
+                                 </div>
+                             </div>
+                         </div>
+                         <div className="footer-bottom">
+                             <div className="footer-bottom-content">
+                                 <p>&copy; 2025 PM Internship Portal. All rights reserved.</p>
+                             </div>
+                         </div>
+                     </div>
+                 </footer>
+             );
+        };
+
+        const App = () => {
+            const [username, setUsername] = useState('J. Doe');
+
+            useEffect(() => {
+                const urlParams = new URLSearchParams(window.location.search);
+                const userFromUrl = urlParams.get('username');
+                if (userFromUrl) {
+                    setUsername(userFromUrl);
+                }
+                
+                // Try to get username from localStorage
+                const storedUserName = localStorage.getItem('userName');
+                if (storedUserName) {
+                    setUsername(storedUserName);
+                }
+            }, []);
+
+            useEffect(() => {
+                // Non-React script for cursor and background
+                const cursor = document.querySelector('.custom-cursor');
+                document.body.style.cursor = 'none';
+
+                const handleMouseMove = (e) => {
+                    cursor.style.left = `${e.clientX}px`;
+                    cursor.style.top = `${e.clientY}px`;
+                };
+
+                const floatingIconsContainer = document.querySelector('.floating-icons-bg');
+                const icons = ['fas fa-briefcase', 'fas fa-user-tie', 'fas fa-graduation-cap', 'fas fa-chart-line', 'fas fa-building', 'fas fa-bell', 'fas fa-tasks', 'fas fa-handshake'];
+                const createFloatingIcon = () => {
+                    const icon = document.createElement('i');
+                    icon.className = `${icons[Math.floor(Math.random() * icons.length)]} floating-icon-bg`;
+                    icon.style.top = `${Math.random() * 100}%`;
+                    icon.style.left = `${Math.random() * 100}%`;
+                    icon.style.animationDuration = `${Math.random() * 10 + 10}s`;
+                    icon.style.animationDelay = `${Math.random() * 5}s`;
+                    floatingIconsContainer.appendChild(icon);
+                    setTimeout(() => icon.remove(), (parseFloat(icon.style.animationDuration) || 20) * 1000);
+                };
+
+                const interval = setInterval(createFloatingIcon, 2000);
+
+                window.addEventListener('mousemove', handleMouseMove);
+
+                return () => {
+                    window.removeEventListener('mousemove', handleMouseMove);
+                    clearInterval(interval);
+                    document.body.style.cursor = 'default';
+                };
+            }, []);
+
+            return (
+                <>
+                    <div className="gov-header"></div>
+                    <div className="video-background">
+                        <video autoPlay loop muted playsInline>
+                            <source src="" type="video/mp4" />
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                    <LoadingScreen />
+                    <Header username={username} />
+                    <main>
+                        <Dashboard />
+                    </main>
+                    <Footer />
+                </>
+            );
+        };
+        
+        const container = document.getElementById('root');
+        const root = ReactDOM.createRoot(container);
+        root.render(<App />);
+    </script>
+</body>
+</html>

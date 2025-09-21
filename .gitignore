@@ -1,0 +1,20 @@
+# Python cache and compiled files
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environments
+venv/
+.env/
+.venv/
+
+# Environment variables
+*.env
+
+# IDE settings (optional, if you use VSCode/PyCharm)
+.vscode/
+.idea/
+
+# MacOS metadata
+.DS_Store
